@@ -1,5 +1,7 @@
 {
   "name": "Places",
-  "integrations": {},
+  "integrations": {
+    "capacitor": {}
+  },
   "type": "angular"
 }
