@@ -11,21 +11,27 @@ export class PlacesService {
       "Manhattan Mansion",
       "In the heart of New York",
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEXzK50q24vzvtwqWmGB2mT5mUiAv2UmoYIw&usqp=CAU",
-      149.99
+      149.99,
+      new Date("2019-01-01"),
+      new Date("2019-12-31")
     ),
     new Place(
       "p2",
       "Mama Timo Estate",
       "Makongeni, Jogoo Road",
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTRhjBULpqQldoN4v0PGVdPeUy0uVhRUejvjA&usqp=CAU",
-      75.0
+      75.0,
+      new Date("2019-01-01"),
+      new Date("2019-12-31")
     ),
     new Place(
       "p3",
       "Ruth Kandali Estate",
       "Kabati-Kitui",
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQKDgyVZRelfk7xeDUf2bfqRBrHSU8Iv7jYg&usqp=CAU",
-      120.99
+      120.99,
+      new Date("2019-01-01"),
+      new Date("2019-12-31")
     ),
   ];
 
