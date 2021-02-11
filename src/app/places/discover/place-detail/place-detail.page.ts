@@ -1,47 +1,51 @@
-import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Component, OnInit, OnDestroy } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
 import {
-  ActionSheetController,
-  ModalController,
   NavController,
+  ModalController,
+  ActionSheetController,
 } from "@ionic/angular";
-import { CreateBookingComponent } from "src/app/bookings/create-booking/create-booking.component";
-import { Place } from "../../place.model";
+import { Subscription } from "rxjs";
+
 import { PlacesService } from "../../places.service";
+import { Place } from "../../place.model";
+import { CreateBookingComponent } from "../../../bookings/create-booking/create-booking.component";
 
 @Component({
   selector: "app-place-detail",
   templateUrl: "./place-detail.page.html",
   styleUrls: ["./place-detail.page.scss"],
 })
-export class PlaceDetailPage implements OnInit {
+export class PlaceDetailPage implements OnInit, OnDestroy {
   place: Place;
+  private placeSub: Subscription;
 
   constructor(
-    private router: Router,
     private navCtrl: NavController,
-    private modalCtrl: ModalController,
-    private placesService: PlacesService,
     private route: ActivatedRoute,
+    private placesService: PlacesService,
+    private modalCtrl: ModalController,
     private actionSheetCtrl: ActionSheetController
   ) {}
 
   ngOnInit() {
     this.route.paramMap.subscribe((paramMap) => {
       if (!paramMap.has("placeId")) {
-        this.navCtrl.navigateBack("/places/tabs/offers");
+        this.navCtrl.navigateBack("/places/tabs/discover");
         return;
       }
-      this.place = this.placesService.getPlace(paramMap.get("placeId"));
-      console.log(this.place.id);
+      this.placeSub = this.placesService
+        .getPlace(paramMap.get("placeId"))
+        .subscribe((place) => {
+          this.place = place;
+        });
     });
   }
 
   onBookPlace() {
-    // this.router.navigateByUrl("/places/tabs/discover");
-    // this.navCtrl.navigateBack("/places/tabs/discover");
+    // this.router.navigateByUrl('/places/tabs/discover');
+    // this.navCtrl.navigateBack('/places/tabs/discover');
     // this.navCtrl.pop();
-
     this.actionSheetCtrl
       .create({
         header: "Choose an Action",
@@ -86,5 +90,11 @@ export class PlaceDetailPage implements OnInit {
           console.log("BOOKED!");
         }
       });
+  }
+
+  ngOnDestroy() {
+    if (this.placeSub) {
+      this.placeSub.unsubscribe();
+    }
   }
 }
