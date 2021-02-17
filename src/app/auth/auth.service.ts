@@ -4,8 +4,8 @@ import { Injectable } from "@angular/core";
   providedIn: "root",
 })
 export class AuthService {
-  private _userIsAuthenticated = false;
-  private _userId = "abc";
+  private _userIsAuthenticated = true;
+  private _userId = "xyz";
 
   get userIsAuthenticated() {
     return this._userIsAuthenticated;

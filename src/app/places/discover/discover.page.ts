@@ -5,7 +5,7 @@ import { Subscription } from "rxjs";
 
 import { PlacesService } from "../places.service";
 import { Place } from "../place.model";
-import { AuthService } from "src/app/auth/auth.service";
+import { AuthService } from "../../auth/auth.service";
 
 @Component({
   selector: "app-discover",
@@ -15,7 +15,6 @@ import { AuthService } from "src/app/auth/auth.service";
 export class DiscoverPage implements OnInit, OnDestroy {
   loadedPlaces: Place[];
   listedLoadedPlaces: Place[];
-  isLoading = false;
   relevantPlaces: Place[];
   private placesSub: Subscription;
 
@@ -38,7 +37,6 @@ export class DiscoverPage implements OnInit, OnDestroy {
   }
 
   onFilterUpdate(event: CustomEvent<SegmentChangeEventDetail>) {
-    console.log(event.detail);
     if (event.detail.value === "all") {
       this.relevantPlaces = this.loadedPlaces;
       this.listedLoadedPlaces = this.relevantPlaces.slice(1);

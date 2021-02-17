@@ -1,42 +1,42 @@
 import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
 import { BehaviorSubject } from "rxjs";
 import { take, map, tap, delay, switchMap } from "rxjs/operators";
 
 import { Place } from "./place.model";
 import { AuthService } from "../auth/auth.service";
-import { HttpClient } from "@angular/common/http";
 
 // [
 //   new Place(
-//     "p1",
-//     "Musa & Sons Apartments",
-//     "A romantic place in Paris!",
-//     "https://lonelyplanetimages.imgix.net/mastheads/GettyImages-538096543_medium.jpg?sharp=10&vib=20&w=1200",
+//     'p1',
+//     'Manhattan Mansion',
+//     'In the heart of New York City.',
+//     'https://lonelyplanetimages.imgix.net/mastheads/GettyImages-538096543_medium.jpg?sharp=10&vib=20&w=1200',
 //     149.99,
-//     new Date("2019-01-01"),
-//     new Date("2019-12-31"),
-//     "abc"
+//     new Date('2019-01-01'),
+//     new Date('2019-12-31'),
+//     'abc'
 //   ),
 //   new Place(
-//     "p2",
-//     "Mama Timo Flats",
-//     "In the heart of Nairobi City.",
-//     "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Paris_Night.jpg/1024px-Paris_Night.jpg",
+//     'p2',
+//     "L'Amour Toujours",
+//     'A romantic place in Paris!',
+//     'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Paris_Night.jpg/1024px-Paris_Night.jpg',
 //     189.99,
-//     new Date("2019-01-01"),
-//     new Date("2019-12-31"),
-//     "abc"
+//     new Date('2019-01-01'),
+//     new Date('2019-12-31'),
+//     'abc'
 //   ),
 //   new Place(
-//     "p3",
-//     "The Foggy Palace",
-//     "Not your average city trip!",
-//     "https://upload.wikimedia.org/wikipedia/commons/0/01/San_Francisco_with_two_bridges_and_the_fog.jpg",
+//     'p3',
+//     'The Foggy Palace',
+//     'Not your average city trip!',
+//     'https://upload.wikimedia.org/wikipedia/commons/0/01/San_Francisco_with_two_bridges_and_the_fog.jpg',
 //     99.99,
-//     new Date("2019-01-01"),
-//     new Date("2019-12-31"),
-//     "abc"
-//   ),
+//     new Date('2019-01-01'),
+//     new Date('2019-12-31'),
+//     'abc'
+//   )
 // ]
 
 interface PlaceData {
@@ -124,7 +124,10 @@ export class PlacesService {
     return this.http
       .post<{ name: string }>(
         "https://places-5ba5e-default-rtdb.firebaseio.com/offered-places.json",
-        { ...newPlace, id: null }
+        {
+          ...newPlace,
+          id: null,
+        }
       )
       .pipe(
         switchMap((resData) => {
@@ -140,19 +143,19 @@ export class PlacesService {
     // return this.places.pipe(
     //   take(1),
     //   delay(1000),
-    //   tap((places) => {
+    //   tap(places => {
     //     this._places.next(places.concat(newPlace));
     //   })
     // );
   }
 
   updatePlace(placeId: string, title: string, description: string) {
+    let updatedPlaces: Place[];
     return this.places.pipe(
       take(1),
-      delay(1000),
-      tap((places) => {
+      switchMap((places) => {
         const updatedPlaceIndex = places.findIndex((pl) => pl.id === placeId);
-        const updatedPlaces = [...places];
+        updatedPlaces = [...places];
         const oldPlace = updatedPlaces[updatedPlaceIndex];
         updatedPlaces[updatedPlaceIndex] = new Place(
           oldPlace.id,
@@ -164,6 +167,12 @@ export class PlacesService {
           oldPlace.availableTo,
           oldPlace.userId
         );
+        return this.http.put(
+          `https://places-5ba5e-default-rtdb.firebaseio.com/offered-places/${placeId}.json`,
+          { ...updatedPlaces[updatedPlaceIndex], id: null }
+        );
+      }),
+      tap(() => {
         this._places.next(updatedPlaces);
       })
     );
